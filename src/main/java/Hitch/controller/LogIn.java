@@ -19,7 +19,6 @@ public class LogIn {
   @RequestMapping(method= RequestMethod.GET)
   public @ResponseBody int handleLogIn() throws IOException
   {
-
     this.id++;
     return id;
   }

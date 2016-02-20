@@ -1,40 +1,57 @@
 package Hitch.controller;
 
 //import Hitch.persistance.DataBase;
-import Hitch.persistance.SQLHelper2;
+import Hitch.persistance.SQLHelper;
+import Hitch.persistance.dao.RidesDAO;
+import Hitch.util.HitchError;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Created by olafurma on 6.2.2016.
  */
 @Controller
-@RequestMapping("/newRide")
+@RequestMapping("/rides")
 public class Ride {
+  private final String NOT_AN_INTEGER = "Destination or departure location should be in integer format";
+  private SQLHelper db = new SQLHelper();
 
-  // Does nothing at the moment but concat the input together and send it back
-  // This function should, eventually, send to a database the ride with id.
-  // If database code is uncommented it will crash ... Don't know why.
   @RequestMapping(method= RequestMethod.GET)
-  public @ResponseBody String handleNewRide(@RequestParam(value="from") String from, @RequestParam(value="to") String to, @RequestParam(value="phone") String phone) throws IOException
+  public @ResponseBody List<RidesDAO> fetchAllRides() throws IOException
   {
-//    DataBase base = new DataBase();
-//    base.test();
-    int pickup = Integer.parseInt(from);
-    int dropoff = Integer.parseInt(to);
-    int phonenr = Integer.parseInt(phone);
+    return db.fetchRides();
+  }
 
-    SQLHelper2 db = new SQLHelper2();
-    db.insertRide(pickup, dropoff, phonenr);
-    db.printMatrix(db.getRideArray());
+  @RequestMapping(value= "/newRide", method= RequestMethod.PUT)
+  public @ResponseBody void handleNewRide(@RequestParam(value="from") String from, @RequestParam(value="to") String to) throws IOException, HitchError
+  {
+    int pickup;
+    int dropOff;
+    try {
+      pickup = Integer.parseInt(from);
+      dropOff = Integer.parseInt(to);
+    } catch (Exception e) {
+      throw new HitchError(NOT_AN_INTEGER, Level.WARNING, e);
+    }
 
-    String response = "From: " + from + " To: " + to;
-    return response;
+    String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+    System.out.println(sessionId);
+
+    db.insertRide(pickup, dropOff, sessionId);
+  }
+
+  @RequestMapping(value= "/cancelRide", method= RequestMethod.DELETE)
+  public @ResponseBody void handleCancelRide()
+  {
+    String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+    db.deleteRide(sessionId);
   }
 }
