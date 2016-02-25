@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.websocket.server.PathParam;
 import java.io.IOException;
@@ -14,12 +15,11 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/login")
 public class LogIn {
-  private int id = 0;
 
   @RequestMapping(method= RequestMethod.GET)
-  public @ResponseBody int handleLogIn() throws IOException
+  public @ResponseBody String handleLogIn() throws IOException
   {
-    this.id++;
-    return id;
+    System.out.println(RequestContextHolder.currentRequestAttributes().getSessionId());
+    return RequestContextHolder.currentRequestAttributes().getSessionId();
   }
 }

@@ -41,9 +41,11 @@ public class SQLHelper {
 
   private List<RidesDAO> requestedRidesCache = new ArrayList<RidesDAO>();
   private final String[] columnNames         = new String[]{"id", "pickup", "dropOff", "sessionId"};
-  private final String   selection           = "select id, pickup, dropOff, sessionId from rides;";
+  private final String   FETCH_RIDES         = "select id, pickup, dropOff from rides;";
   private final String   insertion           = "insert into rides(pickup, dropOff, sessionId) values(?,?,?);";
   private final String   remove              = "delete from rides where sessionId is (?);";
+  private final String   FETCH_MESSAGES      = "select message from messages where sessionId = ?;";
+  private final String   MESSAGE_INSERTION   = "insert into messages(message, sessionId) values(?, (SELECT sessionId FROM rides where id is (?)));";
 
 
   /**
@@ -52,7 +54,8 @@ public class SQLHelper {
    * After: static variable connection is now connected to database data.db
    * Used by insertRide() and fetchRides()
    */
-  public void createConnection(){
+  public void createConnection()
+  {
     connection = null;
     try {
       Class.forName("org.sqlite.JDBC");
@@ -64,7 +67,8 @@ public class SQLHelper {
     logger.info("Opened database successfully");
   }
 
-  public void deleteRide(String sessionId) {
+  public void deleteRide(String sessionId)
+  {
     createConnection();
     try{
       connection.setAutoCommit(false);
@@ -83,7 +87,8 @@ public class SQLHelper {
     updateCache();
   }
 
-  public void insertRide(int pickup, int dropOff, String sessionId){
+  public void insertRide(int pickup, int dropOff, String sessionId)
+  {
     createConnection();
     try{
       connection.setAutoCommit(false);
@@ -109,17 +114,16 @@ public class SQLHelper {
   public void updateCache(){
     requestedRidesCache = new ArrayList<RidesDAO>();
     createConnection();
-
     try{
       connection.setAutoCommit(false);
-      PreparedStatement statement = connection.prepareStatement(selection);
+      PreparedStatement statement = connection.prepareStatement(FETCH_RIDES);
       ResultSet resultSet = statement.executeQuery();
 
       while(resultSet.next()) {
         int pickup = resultSet.getInt(columnNames[1]);
         int dropOff = resultSet.getInt(columnNames[2]);
-        String sessionId = resultSet.getString(columnNames[3]);
-        RidesDAO dao = new RidesDAO(pickup, dropOff, sessionId);
+        int id = resultSet.getInt(columnNames[0]);
+        RidesDAO dao = new RidesDAO(pickup, dropOff, id);
         requestedRidesCache.add(dao);
       }
 
@@ -134,6 +138,55 @@ public class SQLHelper {
     }
   }
 
+  public void insertMessage(String message, int passengerId)
+  {
+    createConnection();
+    try {
+      connection.setAutoCommit(false);
+      PreparedStatement statement = connection.prepareStatement(MESSAGE_INSERTION);
+
+      statement.setString(1, message);
+      statement.setInt(2, passengerId);
+
+      statement.executeUpdate();
+      statement.close();
+      connection.commit();
+      connection.close();
+
+    } catch (SQLException ex){
+      logger.log(Level.SEVERE, "SQL exception: " + ex.getMessage(), ex);
+    } catch (Exception e){
+      logger.log(Level.SEVERE, "Insert Message Error", e);
+    }
+  }
+
+  public List<String> fetchMessages(String sessionId)
+  {
+    List<String> messages = new ArrayList<String>();
+    createConnection();
+    try {
+      connection.setAutoCommit(false);
+      PreparedStatement statement = connection.prepareStatement(FETCH_MESSAGES);
+
+      statement.setString(1, sessionId);
+      ResultSet resultSet = statement.executeQuery();
+
+      while(resultSet.next()) {
+        String message = resultSet.getString("message");
+        messages.add(message);
+      }
+
+      resultSet.close();
+      statement.close();
+      connection.close();
+    } catch (SQLException ex){
+      logger.log(Level.SEVERE, "SQL exception: " + ex.getMessage(), ex);
+    } catch (Exception e){
+      logger.log(Level.SEVERE, "Insert Message Error", e);
+    }
+    return messages;
+  }
+
   public List<RidesDAO> fetchRides()
   {
     if(this.requestedRidesCache.isEmpty()){
@@ -141,4 +194,6 @@ public class SQLHelper {
     }
     return this.requestedRidesCache;
   }
+
+
 }

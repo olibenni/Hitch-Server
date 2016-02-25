@@ -1,22 +1,20 @@
 package Hitch.persistance.dao;
 
-import Hitch.controller.Ride;
-
 /**
  * Created by olafurma on 20.2.2016.
  */
 public class RidesDAO {
   private int pickup;
   private int dropOff;
-  private String sessionId;
+  private int id;
 
   public RidesDAO(){};
 
-  public RidesDAO(int pickup, int dropOff, String sessionId)
+  public RidesDAO(int pickup, int dropOff, int id)
   {
     this.pickup = pickup;
     this.dropOff = dropOff;
-    this.sessionId = sessionId;
+    this.id = id;
   }
 
   public int getPickup() {
@@ -35,11 +33,11 @@ public class RidesDAO {
     this.dropOff = dropOff;
   }
 
-  public String getSessionId() {
-    return this.sessionId;
+  public int getId() {
+    return this.id;
   }
 
-  public void setSessionId(String sessionId) {
-    this.sessionId = sessionId;
+  public void getId(int id) {
+    this.id = id;
   }
 }

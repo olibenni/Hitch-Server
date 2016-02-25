@@ -1,8 +1,8 @@
 package Hitch.controller;
 
-//import Hitch.persistance.DataBase;
 import Hitch.persistance.SQLHelper;
 import Hitch.persistance.dao.RidesDAO;
+import Hitch.util.Constants;
 import Hitch.util.HitchError;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,6 @@ import java.util.logging.Level;
 @Controller
 @RequestMapping("/rides")
 public class Ride {
-  private final String NOT_AN_INTEGER = "Destination or departure location should be in integer format";
   private SQLHelper db = new SQLHelper();
 
   @RequestMapping(method= RequestMethod.GET)
@@ -39,7 +38,7 @@ public class Ride {
       pickup = Integer.parseInt(from);
       dropOff = Integer.parseInt(to);
     } catch (Exception e) {
-      throw new HitchError(NOT_AN_INTEGER, Level.WARNING, e);
+      throw new HitchError(Constants.NOT_AN_INTEGER, Level.WARNING, e);
     }
 
     String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
@@ -53,5 +52,19 @@ public class Ride {
   {
     String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
     db.deleteRide(sessionId);
+  }
+
+  @RequestMapping(value= "/messages", method= RequestMethod.GET)
+  public @ResponseBody List<String> fetchMessagesForUser()
+  {
+    String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+    return db.fetchMessages(sessionId);
+  }
+
+  @RequestMapping(value= "/createMessage", method= RequestMethod.POST)
+  public @ResponseBody void createMessage(@RequestParam(value="message") String message)
+  {
+    String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+//    db.insertMessage(message, sessionId);
   }
 }
