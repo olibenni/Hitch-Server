@@ -22,7 +22,7 @@ public class Messages {
   private SQLHelper db = new SQLHelper();
 
   @RequestMapping(method= RequestMethod.GET)
-  public List<String> fetchMessagesForUser()
+  public @ResponseBody List<String> fetchMessagesForUser()
   {
     String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
     return db.fetchMessages(sessionId);
