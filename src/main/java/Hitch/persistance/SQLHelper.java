@@ -39,6 +39,10 @@ public class SQLHelper {
   private Logger logger = Logger.getLogger(SQLHelper.class.getName());
   private Connection connection;
 
+  private String url = "jdbc:postgresql://localhost/master";
+  private String user = "david";
+  private String password = "";
+
   private List<RidesDAO> requestedRidesCache = new ArrayList<RidesDAO>();
   private final String[] columnNames         = new String[]{"id", "pickup", "dropOff", "sessionId"};
   private final String   FETCH_RIDES         = "select id, pickup, dropOff from rides;";
@@ -59,7 +63,7 @@ public class SQLHelper {
     connection = null;
     try {
       Class.forName("org.sqlite.JDBC");
-      connection = DriverManager.getConnection("jdbc:sqlite:data.db");
+      connection = DriverManager.getConnection(url,user,password);
     } catch ( Exception e ) {
       logger.log(Level.SEVERE, e.getClass().getName() + ": " + e.getMessage());
       System.exit(0);
