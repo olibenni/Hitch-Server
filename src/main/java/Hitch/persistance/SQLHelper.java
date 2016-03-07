@@ -1,6 +1,8 @@
 package Hitch.persistance;
 
 import Hitch.persistance.dao.RidesDAO;
+
+import java.net.URI;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -39,9 +41,7 @@ public class SQLHelper {
   private Logger logger = Logger.getLogger(SQLHelper.class.getName());
   private Connection connection;
 
-  private String url = "jdbc:postgresql://localhost/master";
-  private String user = "david";
-  private String password = "";
+  private String url = "jdbc:postgresql://ec2-107-20-242-191.compute-1.amazonaws.com:5432/deujiqqp6796nm?user=ddjlcxkosywwoa&password=pGxJiRDy1AP6reXMjiRyA7s8NX&sslmode=require";
 
   private List<RidesDAO> requestedRidesCache = new ArrayList<RidesDAO>();
   private final String[] columnNames         = new String[]{"id", "pickup", "dropOff", "sessionId"};
@@ -62,8 +62,7 @@ public class SQLHelper {
   {
     connection = null;
     try {
-      Class.forName("org.sqlite.JDBC");
-      connection = DriverManager.getConnection(url,user,password);
+      connection = DriverManager.getConnection(url);
     } catch ( Exception e ) {
       logger.log(Level.SEVERE, e.getClass().getName() + ": " + e.getMessage());
       System.exit(0);
