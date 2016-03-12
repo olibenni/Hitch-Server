@@ -41,7 +41,7 @@ public class SQLHelper {
   private Logger logger = Logger.getLogger(SQLHelper.class.getName());
   private Connection connection;
 
-  private String url = "jdbc:postgresql://ec2-107-20-242-191.compute-1.amazonaws.com:5432/deujiqqp6796nm?user=ddjlcxkosywwoa&password=pGxJiRDy1AP6reXMjiRyA7s8NX&sslmode=require";
+  private String url = "jdbc:postgresql://ec2-107-20-153-141.compute-1.amazonaws.com:5432/d5tmo76n3ouosi?user=suewsthfrevnff&password=c8qxeD7c9xzU-4idGuvo0LwMzh&sslmode=require";
 
   private List<RidesDAO> requestedRidesCache = new ArrayList<RidesDAO>();
   private final String[] columnNames         = new String[]{"id", "pickup", "dropOff", "sessionId"};
