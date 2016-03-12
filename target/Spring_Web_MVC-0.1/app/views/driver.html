@@ -1,0 +1,18 @@
+<div class="application">
+    <h3 class="postcodeHeader" id="driverHeader">Finndu farþega á hverju svæði --></h3>
+
+    <div class="passengerTable">
+        <table>
+            <tr>
+                <td>
+                    Farþegar
+                </td>
+            </tr>
+            <tbody data-bind="foreach: passengers">
+            <tr id="passengerRows" data-bind="text: $data.info, click: $parent.onClick">
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
