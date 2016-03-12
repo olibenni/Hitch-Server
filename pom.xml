@@ -14,8 +14,8 @@
         <version>1.3.0.RELEASE</version>
     </parent>
 
-    <!-- Packaging project in a war file. Run "mvn package" -->
-    <packaging>war</packaging>
+    <!-- Packaging project in a jar file. Run "mvn package" -->
+    <packaging>jar</packaging>
 
     <dependencies>
 
