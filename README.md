@@ -4,6 +4,7 @@
 To run:
 
 With IntelliJ:
+
     File -> New -> Project From Existing Sources
     Choose Hitch-Server click OK
 
@@ -18,6 +19,7 @@ With IntelliJ:
 
 
 With maven:
+
     Download and install maven
   	https://maven.apache.org/download.cgi
   	https://maven.apache.org/install.html
