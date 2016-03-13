@@ -2,7 +2,8 @@
 
 
 To run:
-  With IntelliJ:
+
+With IntelliJ:
     File -> New -> Project From Existing Sources
     Choose Hitch-Server click OK
 
@@ -15,8 +16,9 @@ To run:
 
     In IntelliJ go to src/main/java/Hitch and right click Hitch.java and select Run Hitch
 
-  With maven:
-  	Download and install maven
+
+With maven:
+    Download and install maven
   	https://maven.apache.org/download.cgi
   	https://maven.apache.org/install.html
     
