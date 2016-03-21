@@ -12,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by olafurma on 22.2.2016.
@@ -19,18 +20,22 @@ import java.util.logging.Level;
 @Controller
 @RequestMapping("/messages")
 public class Messages {
+  private Logger logger = Logger.getLogger(Messages.class.getName());
   private SQLHelper db = new SQLHelper();
 
   @RequestMapping(method= RequestMethod.GET)
   public @ResponseBody List<String> fetchMessagesForUser()
   {
     String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+    logger.info("Incoming request for path /messages from: " + sessionId);
     return db.fetchMessages(sessionId);
   }
 
   @RequestMapping(value= "/createMessage", method= RequestMethod.POST)
   public @ResponseBody void createMessage(@RequestParam(value="message") String message, @RequestParam(value="id") String id) throws HitchError
   {
+    String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
+    logger.info("Incoming request for path /messages/createMessage from: " + sessionId + ". With params message = " + message + " and id = " + id);
     int passengerId;
 
     try {

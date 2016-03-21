@@ -47,9 +47,9 @@ public class SQLHelper {
   private final String[] columnNames         = new String[]{"id", "pickup", "dropOff", "sessionId"};
   private final String   FETCH_RIDES         = "select id, pickup, dropOff from rides;";
   private final String   insertion           = "insert into rides(pickup, dropOff, sessionId) values(?,?,?);";
-  private final String   remove              = "delete from rides where sessionId is (?);";
+  private final String   remove              = "delete from rides where sessionId = ?;";
   private final String   FETCH_MESSAGES      = "select message from messages where sessionId = ?;";
-  private final String   MESSAGE_INSERTION   = "insert into messages(message, sessionId) values(?, (SELECT sessionId FROM rides where id is (?)));";
+  private final String   MESSAGE_INSERTION   = "insert into messages(message, sessionId) values(?, (SELECT sessionId FROM rides where id = ?));";
 
 
   /**
@@ -67,7 +67,6 @@ public class SQLHelper {
       logger.log(Level.SEVERE, e.getClass().getName() + ": " + e.getMessage());
       System.exit(0);
     }
-    logger.info("Opened database successfully");
   }
 
   public void deleteRide(String sessionId)
@@ -77,6 +76,8 @@ public class SQLHelper {
       connection.setAutoCommit(false);
       PreparedStatement statement = connection.prepareStatement(remove);
       statement.setString(1, sessionId);
+
+      logger.info("SQL query: " + statement.toString());
 
       statement.executeUpdate();
       connection.commit();
@@ -101,6 +102,8 @@ public class SQLHelper {
       statement.setInt(2,dropOff);
       statement.setString(3, sessionId);
 
+      logger.info("SQL query: " + statement.toString());
+
       statement.executeUpdate();
       statement.close();
       connection.commit();
@@ -120,6 +123,9 @@ public class SQLHelper {
     try{
       connection.setAutoCommit(false);
       PreparedStatement statement = connection.prepareStatement(FETCH_RIDES);
+
+      logger.info("SQL query: " + statement.toString());
+
       ResultSet resultSet = statement.executeQuery();
 
       while(resultSet.next()) {
@@ -151,6 +157,8 @@ public class SQLHelper {
       statement.setString(1, message);
       statement.setInt(2, passengerId);
 
+      logger.info("SQL query: " + statement.toString());
+
       statement.executeUpdate();
       statement.close();
       connection.commit();
@@ -172,6 +180,9 @@ public class SQLHelper {
       PreparedStatement statement = connection.prepareStatement(FETCH_MESSAGES);
 
       statement.setString(1, sessionId);
+
+      logger.info("SQL query: " + statement.toString());
+
       ResultSet resultSet = statement.executeQuery();
 
       while(resultSet.next()) {
@@ -197,6 +208,4 @@ public class SQLHelper {
     }
     return this.requestedRidesCache;
   }
-
-
 }
